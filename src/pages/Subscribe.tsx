@@ -1,21 +1,15 @@
-import { gql, useMutation } from "@apollo/client";
 import { useState, FormEvent } from "react";
 import Logo from "../components/Logo";
-
-const CREATE_SUBCRIBER_MUTATION = gql`
-  mutation CreateSubscriber($name: String!, $email: String!) {
-    createSubscriber(data: { name: $name, email: $email }) {
-      id
-    }
-  }
-`;
+import { useCreateSubscriberMutation } from "../graphql/generated";
 
 const Subscribe = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
+  const [createSubscriber, { loading }] = useCreateSubscriberMutation();
+
   async function handleSubscribe(event: FormEvent) {
-    event?.preventDefault();
+    event.preventDefault();
 
     await createSubscriber({
       variables: {
@@ -24,8 +18,6 @@ const Subscribe = () => {
       },
     });
   }
-
-  const [createSubscriber] = useMutation(CREATE_SUBCRIBER_MUTATION);
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-no-repeat bg-cover bg-blur">
@@ -67,6 +59,7 @@ const Subscribe = () => {
             />
             <button
               className="px-8 mt-4 font-bold uppercase transition-colors bg-green-500 rounded hover:bg-green-700 text-small h-14"
+              disabled={loading}
               type="submit"
             >
               Garantir minha vaga
